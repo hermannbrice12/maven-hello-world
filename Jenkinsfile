@@ -50,7 +50,7 @@ pipeline {
     
     post {
         always {
-            echo 'Pipeline terminé.'
+            echo 'Pipeline terminé c'est bon.'
         }
         success {
             echo 'Le pipeline a réussi.'
