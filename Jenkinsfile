@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git url: "${GITHUB_URL}", branch: 'main'
+                git url: "${GITHUB_URL}", branch: 'master'
             }
         }
         
