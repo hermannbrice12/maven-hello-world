@@ -1,5 +1,6 @@
 # Utilise une image Maven officielle pour construire le projet
-FROM maven:3.8.6-openjdk-17 AS build
+FROM maven:3.8.7-openjdk-17-slim AS build
+
 
 # Définir le répertoire de travail dans le conteneur
 WORKDIR /app
