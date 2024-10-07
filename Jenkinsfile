@@ -12,6 +12,15 @@ pipeline {
             }
         }
         
+        stage('Build') {
+            steps {
+                script {
+                    // Construire le projet Maven
+                    sh 'mvn clean install'
+                }
+            }
+        }
+        
         stage('Test') {
             steps {
                 script {
@@ -20,14 +29,14 @@ pipeline {
                 }
             }
         }
-    }
 
-    post {
-        success {
-            echo 'Le pipeline a réussi avec succès !'
-        }
-        failure {
-            echo 'Le pipeline a échoué.'
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Construire l'image Docker à partir du Dockerfile
+                    sh 'docker build -t maven-hello-world .'
+                }
+            }
         }
     }
 }
