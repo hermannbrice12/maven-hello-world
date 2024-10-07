@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar /app/app.jar
 
 # Exposer le port sur lequel l'application écoute
-EXPOSE 8080
+EXPOSE 8081
 
 # Commande pour exécuter l'application
 CMD ["java", "-jar", "/app/app.jar"]
