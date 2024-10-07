@@ -8,22 +8,24 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>CounterWebApp Maven Webapp</name>
 	<url>http://maven.apache.org</url>
+
+	<!-- Mettre à jour les versions du JDK et des dépendances -->
 	<properties>
-		<jdk.version>1.7</jdk.version>
+		<jdk.version>11</jdk.version> <!-- Mise à jour vers JDK 11 -->
 		<spring.version>4.1.1.RELEASE</spring.version>
 		<jstl.version>1.2</jstl.version>
-		<junit.version>4.11</junit.version>
-		<logback.version>1.0.13</logback.version>
-		<jcl-over-slf4j.version>1.7.5</jcl-over-slf4j.version>
+		<junit.version>4.13.2</junit.version> <!-- Dernière version stable de JUnit -->
+		<logback.version>1.2.3</logback.version> <!-- Dernière version de Logback -->
+		<jcl-over-slf4j.version>1.7.30</jcl-over-slf4j.version> <!-- Mise à jour SLF4J -->
 	</properties>
 
 	<dependencies>
-
 		<!-- Unit Test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Spring Core -->
@@ -69,39 +71,34 @@
 			<artifactId>jstl</artifactId>
 			<version>${jstl.version}</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>
 		<finalName>CounterWebApp</finalName>
 
 		<plugins>
-		    <!-- Eclipse project -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-				    <!-- Always download and attach dependencies source code -->
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>false</downloadJavadocs>
-					<!-- mvn eclipse:eclipse -Dwtpversion=2.0 -->
-					<wtpversion>2.0</wtpversion>
-				</configuration>
-			</plugin>
-			
-			<!-- Set JDK Compiler Level -->
+			<!-- Mise à jour vers un compilateur JDK plus récent -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.8.1</version>
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
 				</configuration>
 			</plugin>
 
-			<!-- For Tomcat -->
+			<!-- Plugin pour créer des fichiers WAR -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.3.2</version> <!-- Mise à jour vers la dernière version -->
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+
+			<!-- Plugin pour Tomcat -->
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
@@ -110,8 +107,6 @@
 					<path>/CounterWebApp</path>
 				</configuration>
 			</plugin>
-
 		</plugins>
-
 	</build>
 </project>
