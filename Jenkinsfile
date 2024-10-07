@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git url: "${GITHUB_URL}", branch: 'master'
+                git url: "${GITHUB_URL}", branch: 'main'
             }
         }
         
@@ -50,7 +50,7 @@ pipeline {
     
     post {
         always {
-            echo 'Pipeline terminé c'est bon.'
+            echo 'Pipeline terminé.'
         }
         success {
             echo 'Le pipeline a réussi.'
