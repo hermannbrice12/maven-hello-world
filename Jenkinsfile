@@ -38,5 +38,23 @@ pipeline {
                 }
             }
         }
+        
+        stage('Push to DockerHub') {
+            steps {
+                script {
+                    // Connexion à DockerHub avec les credentials
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+                        // Se connecter à DockerHub
+                        sh 'echo $DOCKERHUB_PASS | docker login -u $DOCKERHUB_USER --password-stdin'
+                        
+                        // Taguer l'image avec l'identifiant DockerHub
+                        sh 'docker tag maven-hello-world tchofo/maven-hello-world:latest'
+                        
+                        // Pousser l'image sur DockerHub
+                        sh 'docker push tchofo/maven-hello-world:latest'
+                    }
+                }
+            }
+        }
     }
 }
