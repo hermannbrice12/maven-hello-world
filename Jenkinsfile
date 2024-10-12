@@ -2,6 +2,9 @@ pipeline {
     agent any
 
     environment {
+
+        AWS_REGION = 'eu-west-3'
+        AWS_ACCOUNT_ID = '861276114654'
         DOCKER_HUB_CREDENTIALS = 'dockerhub-credentials' // ID des credentials Docker Hub dans Jenkins
         DOCKER_IMAGE = 'tchofo/maven-hello-world'
         GITHUB_URL = 'https://github.com/hermannbrice12/maven-hello-world.git'
