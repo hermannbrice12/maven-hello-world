@@ -2,38 +2,42 @@ pipeline {
     agent any
 
     environment {
-
-        AWS_REGION = 'eu-west-3'
-        AWS_ACCOUNT_ID = '861276114654'
-        DOCKER_HUB_CREDENTIALS = 'dockerhub-credentials' // ID des credentials Docker Hub dans Jenkins
-        DOCKER_IMAGE = 'tchofo/maven-hello-world'
-        GITHUB_URL = 'https://github.com/hermannbrice12/maven-hello-world.git'
+        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
+        DOCKER_IMAGE = 'tchofo/maven'
+        GITLAB_CREDENTIALS_ID = 'gitlab-token'
+        GIT_REPO = 'https://github.com/hermannbrice12/maven-hello-world.git'
+        GIT_BRANCH = 'main'
+        AWS_CREDENTIALS_ID = 'aws-credentials'  // ID des credentials AWS dans Jenkins
+        AWS_REGION = 'us-east-3'  // Région AWS
+        ECS_CLUSTER = 'your-ecs-cluster-name'  // Nom du cluster ECS
+        ECS_SERVICE = 'your-ecs-service-name'  // Nom du service ECS
     }
 
     stages {
-        stage('Clone') {
+        stage('Checkout GitLab') {
             steps {
-                git url: "${GITHUB_URL}", branch: 'master'
+                git branch: "${GIT_BRANCH}", credentialsId: "${GITLAB_CREDENTIALS_ID}", url: "${GIT_REPO}"
             }
         }
-        
-        stage('Build') {
+
+        stage('Build Maven') {
             steps {
-                sh 'mvn clean install'
+                sh 'mvn clean package -DskipTests'
             }
         }
-        
-        stage('Test') {
+
+        stage('Test Maven') {
             steps {
-                sh 'mvn test'
+                withMaven(maven: 'Maven-Installation-maven') {
+                    sh 'mvn test'
+                }
             }
         }
-        
+
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Construire l'image Docker
-                    sh 'docker build -t ${DOCKER_IMAGE} .'
+                    docker.build("${DOCKER_IMAGE}")
                 }
             }
         }
@@ -41,15 +45,28 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Pousser l'image dans Docker Hub
-                    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDENTIALS}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                        sh 'docker push ${DOCKER_IMAGE}'
+                    docker.withRegistry('', "${DOCKER_CREDENTIALS_ID}") {
+                        docker.image("${DOCKER_IMAGE}").push()
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to AWS ECS') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${AWS_CREDENTIALS_ID}"]]) {
+                    script {
+                        sh """
+                        aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+                        aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
+                        aws configure set region ${AWS_REGION}
+
+                        # Mise à jour de l'image Docker dans ECS
+                        aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --force-new-deployment
+                        """
                     }
                 }
             }
         }
     }
 }
-    
-    
