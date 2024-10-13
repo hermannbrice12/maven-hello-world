@@ -2,11 +2,11 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
-        DOCKER_IMAGE = 'tchofo/maven'
-        GITLAB_CREDENTIALS_ID = 'gitlab-token'
-        GIT_REPO = 'https://github.com/hermannbrice12/maven-hello-world.git'
-        GIT_BRANCH = 'main'
+        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'  // ID des credentials Docker dans Jenkins
+        DOCKER_IMAGE = 'tchofo/maven'  // Nom de l'image Docker
+        GITHUB_CREDENTIALS_ID = 'github-credentials'  // ID des credentials GitHub dans Jenkins
+        GIT_REPO = 'https://github.com/hermannbrice12/maven-hello-world.git'  // URL du dépôt GitHub
+        GIT_BRANCH = 'main'  // Branche Git que vous souhaitez utiliser
         AWS_CREDENTIALS_ID = 'aws-credentials'  // ID des credentials AWS dans Jenkins
         AWS_REGION = 'us-east-3'  // Région AWS
         ECS_CLUSTER = 'your-ecs-cluster-name'  // Nom du cluster ECS
@@ -14,9 +14,9 @@ pipeline {
     }
 
     stages {
-        stage('Checkout GitLab') {
+        stage('Checkout GitHub') {
             steps {
-                git branch: "${GIT_BRANCH}", credentialsId: "${GITLAB_CREDENTIALS_ID}", url: "${GIT_REPO}"
+                git branch: "${GIT_BRANCH}", credentialsId: "${GITHUB_CREDENTIALS_ID}", url: "${GIT_REPO}"
             }
         }
 
