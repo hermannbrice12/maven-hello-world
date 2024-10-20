@@ -22,15 +22,13 @@ pipeline {
 
         stage('Build Maven') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                sh 'mvn clean install'
             }
         }
 
-        stage('Test Maven') {
+         stage('Test') {
             steps {
-                withMaven(maven: 'Maven-Installation-maven') {
-                    sh 'mvn test'
-                }
+                sh 'mvn test'
             }
         }
 
