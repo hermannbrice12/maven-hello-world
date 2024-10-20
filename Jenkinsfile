@@ -58,7 +58,7 @@ pipeline {
                     script {
                         sh """
                         # Mise à jour de l'image Docker dans ECS
-                        aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --force-new-deployment --region ${AWS_REGION}
+                        aws ecs update-service --cluster ${ECS_CLUSTER}  --force-new-deployment --region ${AWS_REGION}
                         """
                     }
                 }
