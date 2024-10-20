@@ -9,8 +9,8 @@ pipeline {
         GIT_BRANCH = 'main'  // Branche Git que vous souhaitez utiliser
         AWS_CREDENTIALS_ID = 'aws-credentials'  // ID des credentials AWS dans Jenkins
         AWS_REGION = 'us-east-3'  // Région AWS
-        ECS_CLUSTER = 'your-ecs-cluster-name'  // Nom du cluster ECS
-        ECS_SERVICE = 'your-ecs-service-name'  // Nom du service ECS
+        ECS_CLUSTER = 'cluster'  // Nom du cluster ECS
+       
     }
 
     stages {
@@ -37,7 +37,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${DOCKER_IMAGE}")
+                    docker.build("${DOCKER_IMAGE}:latest")
                 }
             }
         }
@@ -46,7 +46,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', "${DOCKER_CREDENTIALS_ID}") {
-                        docker.image("${DOCKER_IMAGE}").push()
+                        docker.image("${DOCKER_IMAGE}:latest").push()
                     }
                 }
             }
@@ -57,12 +57,8 @@ pipeline {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${AWS_CREDENTIALS_ID}"]]) {
                     script {
                         sh """
-                        aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
-                        aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
-                        aws configure set region ${AWS_REGION}
-
                         # Mise à jour de l'image Docker dans ECS
-                        aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --force-new-deployment
+                        aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --force-new-deployment --region ${AWS_REGION}
                         """
                     }
                 }
