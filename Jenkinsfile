@@ -6,7 +6,7 @@ pipeline {
         DOCKER_IMAGE = 'tchofo/maven'  // Nom de l'image Docker
         GITHUB_CREDENTIALS_ID = 'github-credentials'  // ID des credentials GitHub dans Jenkins
         GIT_REPO = 'https://github.com/hermannbrice12/maven-hello-world.git'  // URL du dépôt GitHub
-        GIT_BRANCH = 'main'  // Branche Git que vous souhaitez utiliser
+        GIT_BRANCH = 'master'  // Branche Git que vous souhaitez utiliser
         AWS_CREDENTIALS_ID = 'aws-credentials'  // ID des credentials AWS dans Jenkins
         AWS_REGION = 'us-east-3'  // Région AWS
         ECS_CLUSTER = 'cluster'  // Nom du cluster ECS
